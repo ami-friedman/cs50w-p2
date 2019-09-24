@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if 'displayname' not in session %}
+<form action="{{ url_for('index') }}" method="POST">
+        <div class="form-group w-25 mx-auto">
+          <input name="displayname" type="text" class="form-control" id="displayname" placeholder="Display Name">
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+{% else %}
+  <h2> {{ session['displayname'] }} </h2>
+{% endif %}
+
+<a href="{{ url_for('channels') }}">Channels</a>
+{% endblock %}

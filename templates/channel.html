@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block head %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='channel.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container border border-dark">
+<ul class="list-group">
+
+</ul>
+</div>
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="displayname">{{ session['displayname'] }}:</span>
+    </div>
+    <input type="text" id="sentmsg" class="form-control" placeholder="Your Message..." aria-label="Your Message" aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Send</button>
+      </div>
+</div>
+
+{% endblock %}
