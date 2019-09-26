@@ -1,40 +1,82 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    window.history.pushState("Ami", "New", "http://localhost:5000/");
+
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    
-       
-        // button.onclick = () => {
-        //     msg = document.querySelector('#sentmsg').value;
-        //     user = document.querySelector('#displayname').innerHTML;
-        //     const li = document.createElement('li');
-        //     li.innerHTML = `${user} ${msg}`;
-        //     li.className = 'list-group-item'
-        //     document.querySelector('.list-group').append(li);
-        // };
+
+    var currentChannel = '';
 
     socket.on('connect', () => {
 
-        button = document.querySelector('button');
+        const sendBtn = document.querySelector('#send');
+        const addChannelBtn = document.querySelector('#add-channel');
 
-        button.onclick = () => {
-
+        refreshChannelList();
+  
+        sendBtn.onclick = () => {
+            console.log(`current channel:${currentChannel}`)
+            const msg = document.querySelector('#sentmsg').value;
+            socket.emit('send msg', { 'msg': msg , 'channel': currentChannel });
         }
 
-             // Each button should emit a "submit vote" event
-        document.querySelectorAll('button').forEach(button => {
-            button.onclick = () => {
-                const msg = document.querySelector('#sentmsg').value;
-                socket.emit('send msg', {'msg': msg});
-            };
-        });
+        addChannelBtn.onclick = () => {
+            const field = document.querySelector('#channel-name');
+            const channel = field.value;
+            field.value = ''
+            socket.emit('add channel', { 'channel': channel });
+        }
     });
 
-    // When a new vote is announced, add to the unordered list
     socket.on('announce msg', data => {
-        const li = document.createElement('li');
-        li.className = 'list-group-item'
-        li.innerHTML = `${data.msg}`;
-        document.querySelector('.list-group').append(li);
+        addMessageToConversation(data.msg);
     });
+
+    socket.on('announce channel', channel => {
+        addChannelToPanel(channel);       
+        refreshChannelList();
+    });
+
+    function addMessageToConversation(message) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item borderless'
+        li.innerHTML = message;
+        document.querySelector('#conversations').append(li);
+    }
+
+    function addChannelToPanel(channel) {
+        const a = document.createElement('a');
+        a.className = 'nav-link'
+        a.innerHTML = channel;
+        a.setAttribute('href', '#' + channel);
+        const li = document.createElement('li');
+        li.id = channel
+        li.appendChild(a)
+        document.querySelector('#channel-list').append(li);
+    }
+
+    function refreshChannelList(){
+        var channels = document.querySelectorAll('#channel-list>li');
+       
+        channels.forEach(element => {
+            element.onclick = () =>{
+                currentChannel = element.textContent.replace(/(\r\n|\n|\r|\s)/gm,"");
+                clearConversationWindow();
+                fetch(`/channels/${currentChannel}`)
+                .then( res => {
+                    return res.json();
+                })
+                .then( json => {
+                    messages = json.messages;
+                    for (i=0;i < messages.length;i++) {
+                        addMessageToConversation(messages[i]);
+                    }
+                })
+            };
+        });
+    }
+
+    function clearConversationWindow() {
+        document.querySelector('#conversations').innerHTML = ''
+    }
 });
