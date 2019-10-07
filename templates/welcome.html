@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Welcome
+{% endblock %}
+
+{% block content%}
+<div class="jumbotron">
+          <h1 class="display-4">Welcome To Flack</h1>
+          <p class="lead">To get started, please login with a desired display name</p>
+          <form class="form-inline my-2 my-lg-0" action="{{ url_for('login') }}" method="POST">
+                <input pattern="[a-zA-Z0-9-]+" requierd type="text" class="form-control form-control-sm mr-sm-2" name="displayname" placeholder="Display Name">
+                <button class="btn btn-primary btn-sm my-2 my-sm-0" id="login">Login</button>
+        </form>
+</div>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-danger alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+{{ message }} 
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}

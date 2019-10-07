@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block head%}
+<script src="{{ url_for('static', filename='channel.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+
+{% block title%}
+Chat
+{% endblock %}
+
+{% block content%}
+<div class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+          <div class="col-sm col-md-4 col-xl-3">
+           <div class="card">
+               <div class="card-header bg-secondary text-light">
+                   Channels
+               </div>
+               <div class="card-body bg-warning">
+                <div class="list-group" id="channel-list">
+                    {% for channel in channels %}
+                    <button type="button" class="list-group-item list-group-item-action channel">{{ channel }}</button>
+                     {% endfor %}
+                </div>
+               </div>
+               <div class="card-footer bg-info text-light">
+                    <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Channel Name..." id="channel-name">
+                      
+                        <div class="input-group-prepend">
+                            <span class="input-group-text add-btn" id="add-channel">
+                                    <i class="oi" data-glyph="plus"></i>
+                            </span>
+                        </div>
+                    </div>
+               </div>
+           </div>
+          </div>
+          <div class="col-sm col-md-8 col-xl-6 hide" id="chat-box">
+                <div class="card-header bg-success text-light" id="chat-title">
+                       
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none;" id="chat-body">
+
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                            <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Your Message..." id="msg">
+                              
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text send-btn" id="send-msg">
+                                            <i class="oi" data-glyph="location"></i>
+                                    </span>
+                                </div>
+                            </div>
+                    </div>
+          </div>
+        </div>
+      </div>
+{% endblock %}
